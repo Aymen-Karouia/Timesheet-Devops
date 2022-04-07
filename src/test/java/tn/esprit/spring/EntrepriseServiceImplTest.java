@@ -21,7 +21,7 @@ public class EntrepriseServiceImplTest {
 	private static final Logger l = LogManager.getLogger(EntrepriseServiceImplTest.class);
 	
 	@Autowired
-	IEntrepriseService ientrepriseservice;
+	IEntrepriseService iEntrepriseService;
 	
 	@Autowired
     EntrepriseRepository entrepriseRepoistory;
@@ -32,19 +32,38 @@ public class EntrepriseServiceImplTest {
 	public void testAjouterEntreprise() {
 		l.debug("Test méthode AjouterEntreprise");
 		 try {
-			 idE = ientrepriseservice.ajouterEntreprise(new Entreprise("vermeg","raisonSociale "));
+			 Entreprise E = new Entreprise("Vermeg","raisonSociale");
+			 idE = iEntrepriseService.ajouterEntreprise(E);
 			 assertNotNull(idE);
 		 } catch (Exception e) {
 		       l.error("méthode AjouterEntreprise error :" + e);	
 
 			}
 	}
+	
+@Test
+	public void testDeleteEntreprise() {
+		l.debug("Test méthode DeleteEntreprise");
+		try {
+			iEntrepriseService.deleteEntrepriseById(30); 
+			assertNull(iEntrepriseService.getEntrepriseById(30));
+		} catch (Exception e) {
+			l.error("méthode DeleteEntreprise error :"+ e);
+		}
+		
+	}
+	
 
-	@Test
+@Test
 	public void testGetAllDepartementsNamesByEntreprise() {
 		l.debug("Test méthode GetAllDepartementsNamesByEntreprise");
-		List<String> depNames = ientrepriseservice.getAllDepartementsNamesByEntreprise(1);
-		assertNotNull(depNames);
+		try {
+			List<String> depNamByEnt = iEntrepriseService.getAllDepartementsNamesByEntreprise(30);
+			assertNotNull(depNamByEnt);
+		} catch (Exception e) {
+			l.error("méthode GetAllDepartementsNamesByEntreprise error :"+ e);	
+		}
+		
 	}
 
 
