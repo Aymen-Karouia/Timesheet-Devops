@@ -2,7 +2,9 @@ package tn.esprit.spring.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,8 @@ public class EntrepriseServiceImpl implements IEntrepriseService {
 	@Autowired
 	DepartementRepository deptRepoistory;
 	
+	private static final Logger l = Logger.getLogger(EntrepriseServiceImpl.class);
+	
 	public int ajouterEntreprise(Entreprise entreprise) {
 		entrepriseRepoistory.save(entreprise);
 		return entreprise.getId();
@@ -37,37 +41,88 @@ public class EntrepriseServiceImpl implements IEntrepriseService {
 				// ==> c'est l'objet departement(le master) qui va mettre a jour l'association
 				//Rappel : la classe qui contient mappedBy represente le bout Slave
 				//Rappel : Dans une relation oneToMany le mappedBy doit etre du cote one.
-				Entreprise entrepriseManagedEntity = entrepriseRepoistory.findById(entrepriseId).get();
-				Departement depManagedEntity = deptRepoistory.findById(depId).get();
-				
-				depManagedEntity.setEntreprise(entrepriseManagedEntity);
-				deptRepoistory.save(depManagedEntity);
+				Entreprise entrepriseManagedEntity = entrepriseRepoistory.findById(entrepriseId).orElse(null);
+				Departement depManagedEntity = deptRepoistory.findById(depId).orElse(null);
+				if (depManagedEntity!=null) {
+					depManagedEntity.setEntreprise(entrepriseManagedEntity);
+					deptRepoistory.save(depManagedEntity);
+				}
 		
 	}
 	
 	public List<String> getAllDepartementsNamesByEntreprise(int entrepriseId) {
-		Entreprise entrepriseManagedEntity = entrepriseRepoistory.findById(entrepriseId).get();
 		List<String> depNames = new ArrayList<>();
-		for(Departement dep : entrepriseManagedEntity.getDepartements()){
-			depNames.add(dep.getName());
+		try {
+			Entreprise entrepriseManagedEntity = entrepriseRepoistory.findById(entrepriseId).get();
+			if(entrepriseManagedEntity!=null && entrepriseManagedEntity.getDepartements()!=null){
+				for(Departement dep:entrepriseManagedEntity.getDepartements()){
+					depNames.add(dep.getName());
+			}
+				l.debug("getAllDepartementsNamesByEntreprise fini avec succes ");
+				return depNames;
+			}
+				else {
+					l.error("erreur methode getAllDepartementsNamesByEntreprise : " );
+					return depNames;
+				}
+			
+		} catch (Exception e) {
+			l.error("erreur methode getAllDepartementsNamesByEntreprise : " +e);
+			return depNames;
 		}
 		
-		return depNames;
 	}
 
 	@Transactional
 	public void deleteEntrepriseById(int entrepriseId) {
-		entrepriseRepoistory.delete(entrepriseRepoistory.findById(entrepriseId).get());	
+		l.debug("methode deleteEntrepriseById ");
+		try {
+			Optional<Entreprise> Optentrp = entrepriseRepoistory.findById(entrepriseId);
+			if(Optentrp.isPresent()){
+			Entreprise entrp = Optentrp.get();
+			entrepriseRepoistory.delete(entrp);
+			l.debug("deleteEntrepriseById fini avec succes ");
+			}
+			else {
+				l.error("erreur methode deleteEntrepriseById : " );
+			;
+			}
+		} catch (Exception e) {
+			l.error("erreur methode deleteEntrepriseById : " +e);
+			;
+		}
+
 	}
 
 	@Transactional
 	public void deleteDepartementById(int depId) {
-		deptRepoistory.delete(deptRepoistory.findById(depId).get());	
+		l.debug("methode deleteDepartementById ");
+		try {
+			Optional<Departement> op = deptRepoistory.findById(depId);
+			if(op.isPresent()){
+				Departement dp = op.get();
+				deptRepoistory.delete(dp);
+			l.debug("deleteDepartementById fini avec succes ");
+			}
+			else {
+				l.error("erreur methode deleteDepartementById : " );
+			}
+		} catch (Exception e) {
+			l.error("erreur methode deleteDepartementById : " +e);
+		}	
 	}
 
 
 	public Entreprise getEntrepriseById(int entrepriseId) {
-		return entrepriseRepoistory.findById(entrepriseId).get();	
+		l.debug("methode getEntrepriseById ");
+		try {
+			Entreprise entreprise= entrepriseRepoistory.findById(entrepriseId).orElse(null);
+			l.debug("getEntrepriseById fini avec succes ");
+			return entreprise;
+		} catch (Exception e) {
+			l.error("erreur methode getEntrepriseById : " +e);
+			return null;
+		}
 	}
 
 }
