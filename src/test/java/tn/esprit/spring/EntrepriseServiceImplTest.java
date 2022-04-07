@@ -3,8 +3,8 @@ package tn.esprit.spring;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import java.util.List;
 import tn.esprit.spring.entities.Entreprise;
 import tn.esprit.spring.repository.EntrepriseRepository;
@@ -47,14 +47,5 @@ public class EntrepriseServiceImplTest {
 		assertNotNull(depNames);
 	}
 
-	@Test
-	public void testDeleteEntrepriseById() {
-	
-	}
-
-	@Test
-	public void testGetEntrepriseById() {
-		
-	}
 
 }
