@@ -33,7 +33,7 @@ public class TimesheetServiceImplTest {
 		l.debug("Methode ajouterMission");
 		 try {
 			 int idM=iTimesheetService.ajouterMission(new Mission("Project", "Project"));
-			 assertNotNull(idM);
+			 Assert.assertNotNull(String.valueOf(idM));
 		 } catch (Exception e) {
 			 l.error("erreur methode ajouterMission :" +e);	
 			 }
@@ -44,10 +44,10 @@ public class TimesheetServiceImplTest {
 		l.debug("Methode ajouterTimesheet");
 		 try {
 			 int idE = iEmployeService.ajouterEmploye(new Employe("Aymen", "Karouia", "karouia.aymen@spring.tn", true, Role.ADMINISTRATEUR));
-			 int idM=iTimesheetService.ajouterMission(new Mission("Project", "Project"));
+			 int idM = iTimesheetService.ajouterMission(new Mission("Project", "Project"));
 			 iTimesheetService.ajouterTimesheet(idM, idE,new Date(2/2/2022),new Date(3/2/2022));
-			 assertNotNull(idE);
-			 assertNotNull(idM);
+			 Assert.assertNotNull(String.valueOf(idE));
+			 Assert.assertNotNull(String.valueOf(idM));
 		 } catch (Exception e) {
 			 l.error("erreur methode ajouterTimesheet :" +e);	
 			 }
