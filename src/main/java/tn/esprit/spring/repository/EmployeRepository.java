@@ -21,6 +21,8 @@ public interface EmployeRepository extends CrudRepository<Employe, Integer>  {
     @Query("SELECT nom FROM Employe")
     public List<String> employeNames();
     
+    
+    
     @Query("Select "
 			+ "DISTINCT emp from Employe emp "
 			+ "join emp.departements dps "
